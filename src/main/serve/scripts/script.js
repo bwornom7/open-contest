@@ -416,9 +416,18 @@ Contest page
         var endTime = $("#contest-end-time").val();
         var scoreboardOffTime = $("#scoreboard-off-time").val();
 
-        var start = new Date(`${startDate} ${startTime}`).getTime();
-        var end = new Date(`${endDate} ${endTime}`).getTime();
-        var endScoreboard = new Date(`${endDate} ${scoreboardOffTime}`).getTime();
+
+        // Invalid DATE format; "T" after the date and "Z" after the time have been inserted 
+        // for the correct format for creating the Dates, then the milliseconds are adjusted 
+        // for the correct time zone for each of the following variables, since "Z" assumes you
+        // are entering a UTC time.
+
+        var start = new Date(`${startDate}T${startTime}Z`);
+        start = start.getTime() + (start.getTimezoneOffset() * 60000);
+        var end = new Date(`${endDate}T${endTime}Z`);
+        end = end.getTime() + (end.getTimezoneOffset() * 60000);
+        var endScoreboard = new Date(`${endDate}T${scoreboardOffTime}Z`);
+        endScoreboard = endScoreboard.getTime() + (endScoreboard.getTimezoneOffset() * 60000);
 
         if (end <= start) {
             alert("The end of the contest must be after the start.");
