@@ -16,7 +16,7 @@ class HTMLObject:
                 self.contents.append(options["contents"])
             del options["contents"]
         self.options = options
-    
+
     def __str__(self):
         options = ""
         for opt in self.options:
