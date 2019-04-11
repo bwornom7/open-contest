@@ -38,6 +38,7 @@ class TestDataCard(UIElement):
         ]), cls=cls, delete=f"deleteTestData({num})")
 
 def editProblem(params, user):
+    print("\nDISPEDIT",params,"\n")
     probId = params[0]
     prob = Problem.get(probId)
     return Page(
@@ -56,7 +57,7 @@ def editProblem(params, user):
                 ]),
                 div(cls="form-group col-6", contents=[
                     h.label(**{"for": "problem-timelimit", "contents":"Problem Time Limit"}),
-                    h.input(cls="form-control", name="problem-timelimit", id="problem-timelimit", value=escape(prob.timelimit))
+                    h.input(cls="form-control", type="number",name="problem-timelimit", id="problem-timelimit", value=escape(prob.timelimit))
                 ]),
                 div(cls="form-group col-12", contents=[
                     h.label(**{"for": "problem-description", "contents":"Description"}),
@@ -113,6 +114,10 @@ def newProblem(params, user):
                 div(cls="form-group col-12", contents=[
                     h.label(**{"for": "problem-title", "contents":"Title"}),
                     h.input(cls="form-control", name="problem-title", id="problem-title", value="Title")
+                ]),
+                div(cls="form-group col-6", contents=[
+                    h.label(**{"for": "problem-timelimit", "contents":"Problem Time Limit"}),
+                    h.input(cls="form-control", type="number",name="problem-timelimit", id="problem-timelimit", value=Problem.default_timelimit)
                 ]),
                 div(cls="form-group col-12", contents=[
                     h.label(**{"for": "problem-description", "contents":"Description"}),

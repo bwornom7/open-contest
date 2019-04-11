@@ -23,6 +23,8 @@ class Datum:
         }
 
 class Problem:
+    default_timelimit = 5
+
     saveCallbacks = []
     def __init__(self, id=None):
         if id != None:
@@ -51,7 +53,7 @@ class Problem:
             self.tests       = 0
             self.sampleData  = []
             self.testData    = []
-            self.timelimit   = str(5)
+            self.timelimit   = str(Problem.default_timelimit)
 
     def get(id: str):
         with lock.gen_rlock():
