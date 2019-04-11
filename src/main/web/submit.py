@@ -4,6 +4,7 @@ from code.util import register
 from code.util.db import Submission, Problem
 import time
 import shutil
+import difflib
 import re
 from uuid import uuid4
 
@@ -72,21 +73,45 @@ def runCode(sub):
     result = "ok"
 
     for i in range(tests):
-        inputs.append(sub.problem.testData[i].input)
-        errors.append(readFile(f"/tmp/{sub.id}/out/err{i}.txt"))
-        outputs.append(readFile(f"/tmp/{sub.id}/out/out{i}.txt"))
-        answers.append(sub.problem.testData[i].output)
-        
+        test_input = sub.problem.testData[i].input
+        test_error = readFile(f"/tmp/{sub.id}/out/err{i}.txt")
+        test_output = readFile(f"/tmp/{sub.id}/out/out{i}.txt")
+        test_answer = sub.problem.testData[i].output
+
+        inputs.append(test_input)
+        errors.append(test_error)
+        outputs.append(test_output)
+        answers.append(test_answer)
+ 
         res = readFile(f"/tmp/{sub.id}/out/result{i}.txt")
-        if res == "ok" and strip((answers[-1] or "").rstrip()) != strip((outputs[-1] or "").rstrip()):
-            res = "wrong_answer"
+
+        last_output = strip((outputs[-1] or "").rstrip())
+        last_answer = strip((answers[-1] or "").rstrip())
+
+        # improved auto-judge implementaion
+        if res == "ok":
+            output_lines = last_output.split()
+            answer_lines = last_answer.split()
+
+            matches = [line for line in output_lines if line in answer_lines]
+
+            if len(matches) and len(matches) < len(answer_lines):
+                res = "incomplete"
+            elif len(matches) == len(answer_lines) and len(output_lines) > len(matches):
+                res = "extra"
+            elif last_answer == last_output:
+                res = "ok"
+            elif not len(matches):
+                res = "wrong_answer"
+
         if res == None:
             res = "tle"
-        results.append(res)
 
         # Make result the first incorrect result
         if res != "ok" and result == "ok":
             result = res
+
+        results.append(res)
 
     sub.result = result
     if readFile(f"/tmp/{sub.id}/result.txt") == "compile_error\n":

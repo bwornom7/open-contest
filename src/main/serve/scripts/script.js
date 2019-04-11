@@ -162,13 +162,17 @@ Problem page
         "ok": "check",
         "wrong_answer": "times",
         "tle": "clock",
-        "runtime_error": "exclamation-triangle"
+        "runtime_error": "exclamation-triangle",
+        "extra": "times",
+        "incomplete": "times",
     };
     var verdict_name = {
         "ok": "Accepted",
         "wrong_answer": "Wrong Answer",
         "tle": "Time Limit Exceeded",
-        "runtime_error": "Runtime Error"
+        "runtime_error": "Runtime Error",
+        "extra": "Extra Output",
+        "incomplete": "Incomplete Output",
     };
 
     function showResults(sub) {
