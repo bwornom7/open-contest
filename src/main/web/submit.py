@@ -93,17 +93,22 @@ def runCode(sub):
             output_lines = last_output.split()
             answer_lines = last_answer.split()
 
-            matches = [line for line in output_lines if line in answer_lines]
+            # set intersecction
+            matches = list(set(output_lines) & set(answer_lines))
 
-            if len(matches) and len(matches) < len(answer_lines):
+            print("MATCHES",matches)
+            print("OUTPUT","({})".format(last_output))
+            print("ANSWER","({})".format(last_answer))
+
+            if len(matches) and len(output_lines) < len(answer_lines):
                 res = "incomplete"
-            elif len(matches) == len(answer_lines) and len(output_lines) > len(matches):
+            elif len(matches) and len(output_lines) > len(answer_lines):
                 res = "extra"
-            elif last_answer == last_output:
-                res = "ok"
             elif not len(matches):
                 res = "wrong_answer"
-
+            elif last_answer == last_output:
+                res = "ok"
+            
         if res == None:
             res = "tle"
 

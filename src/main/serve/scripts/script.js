@@ -701,6 +701,14 @@ Judging Page
         });
     }
 
+    function download(id) {
+        $.post("/download", {id: id}, data => {
+            $(".download").attr("disabled", false);
+            $(".download").removeClass("button-gray");
+            alert(`Download was ${data}.`);
+        });
+    }
+
     function rejudge(id) {
         $(".rejudge").attr("disabled", true);
         $(".rejudge").addClass("button-gray");
