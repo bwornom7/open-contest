@@ -4,7 +4,7 @@ from code.util.auth import generatePassword
 import logging
 
 def createUser(params, setHeader, user):
-    newPassword = generatePassword()
+    newPassword = "test"
     user = User(
         params["username"],
         newPassword,

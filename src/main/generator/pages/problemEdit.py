@@ -104,6 +104,8 @@ def newProblem(params, user):
         h.input(type="hidden", id="prob-id", value=""),
         h.input(type="hidden", id="pageId", value="Problem"),
         h2("New Problem", cls="page-title"),
+        h.label(**{"for": "checkbox", "contents":"Show Problem Info Blocks   "}),
+        h.input(type="checkbox", id="show", value="show", defaultValue="checked"),
         Card("Problem Details", div(cls="problem-details", contents=[
             h.form(cls="row", contents=[
                 div(cls="form-group col-12", contents=[
