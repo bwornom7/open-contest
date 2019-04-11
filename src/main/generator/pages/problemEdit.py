@@ -38,7 +38,6 @@ class TestDataCard(UIElement):
         ]), cls=cls, delete=f"deleteTestData({num})")
 
 def editProblem(params, user):
-    print("\nDISPEDIT",params,"\n")
     probId = params[0]
     prob = Problem.get(probId)
     return Page(
