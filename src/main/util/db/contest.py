@@ -11,7 +11,7 @@ contests = {}
 class Contest:
     saveCallbacks = []
     def __init__(self, id=None):
-        print("initializing contest", id)
+
         if id != None:
             details       = getKey(f"/contests/{id}/contest.json")
             self.id       = details["id"]
@@ -20,7 +20,7 @@ class Contest:
             self.end      = int(details["end"])
             self.scoreboardOff = int(details.get("scoreboardOff", self.end))
             self.problems = [Problem.get(id) for id in details["problems"]]
-            self.useSampleData = details["useSampleData"]
+            self.useTieBreaker = details["useTieBreaker"]
         else:
             self.id = None
             self.name = None
@@ -28,7 +28,7 @@ class Contest:
             self.end = None
             self.scoreboardOff = None
             self.problems = None
-            self.useSampleData = False
+            self.useTieBreaker = False
 
     def get(id: str):
         with lock.gen_rlock():
@@ -44,7 +44,7 @@ class Contest:
             "end": self.end,
             "scoreboardOff": self.scoreboardOff,
             "problems": [prob.id for prob in self.problems],
-            "useSampleData": self.useSampleData,
+            "useTieBreaker": self.useTieBreaker,
         }
 
     def save(self):
@@ -69,7 +69,7 @@ class Contest:
                 "start": self.start,
                 "end": self.end,
                 "problems": [prob.toJSONSimple() for prob in self.problems],
-                "useSampleData": self.useSampleData,
+                "useTieBreaker": self.useTieBreaker,
             }
 
     def allJSON():
