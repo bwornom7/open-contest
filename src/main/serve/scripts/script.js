@@ -717,6 +717,7 @@ Judging Page
             element.click();
 
             document.body.removeChild(element);
+            alert(`Click to continue.`);
             $.post("/downloadComplete", {id: id},function(){})
         });
     }
