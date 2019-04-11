@@ -6,7 +6,7 @@ import time
 
 class ContestCard(UIElement):
     def __init__(self, contest: Contest):
-        self.html = Card(contest.name, 
+        self.html = Card(contest.name,
             div(
                 h.span(contest.start, cls='time-format'),
                 " - ",
@@ -34,12 +34,13 @@ class ProblemCard(UIElement):
 def editContest(params, user):
     id = params[0] if params else None
     contest = Contest.get(id)
-    
+
     title = "New Contest"
     chooseProblem = ""
     existingProblems = []
     start = time.time() * 1000
     end = (time.time() + 3600) * 1000
+    scoreboardOff = end
     if contest:
         title = contest.name
         start = contest.start
@@ -66,7 +67,7 @@ def editContest(params, user):
             ),
             div(cls="problem-cards", contents=problems)
         ]
-    
+
     return Page(
         h.input(type="hidden", id="contest-id", value=id),
         h.input(type="hidden", id="pageId", value="Contest"),
