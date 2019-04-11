@@ -702,10 +702,22 @@ Judging Page
     }
 
     function download(id) {
-        $.post("/download", {id: id}, data => {
+        $.post("/download", {id: id}, path => {
             $(".download").attr("disabled", false);
             $(".download").removeClass("button-gray");
-            alert(`Download was ${data}.`);
+
+            // Initiate download
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:application/octet-stream;charset=utf-8,');
+            element.setAttribute('download', path);
+        
+            element.style.display = 'none';
+            document.body.appendChild(element);
+        
+            element.click();
+
+            document.body.removeChild(element);
+            $.post("/downloadComplete", {id: id},function(){})
         });
     }
 

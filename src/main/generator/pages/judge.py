@@ -100,6 +100,9 @@ class SubmissionCard(UIElement):
                 h.button("Rejudge", type="button", onclick=f"rejudge('{submission.id}')", cls="btn btn-primary rejudge"),
                 h.br(),
                 h.br(),
+                h.button("Download", type="button", onclick=f"download('{submission.id}')", cls="btn btn-primary download"),
+                h.br(),
+                h.br(),
                 h.strong("Code:"),
                 h.code(submission.code.replace("\n", "<br/>").replace(" ", "&nbsp;"), cls="code"),
                 div(cls="result-tabs", id="result-tabs", contents=[

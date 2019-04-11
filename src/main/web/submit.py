@@ -96,10 +96,6 @@ def runCode(sub):
             # set intersecction
             matches = list(set(output_lines) & set(answer_lines))
 
-            print("MATCHES",matches)
-            print("OUTPUT","({})".format(last_output))
-            print("ANSWER","({})".format(last_answer))
-
             if len(matches) and len(output_lines) < len(answer_lines):
                 res = "incomplete"
             elif len(matches) and len(output_lines) > len(answer_lines):
@@ -163,6 +159,18 @@ def rejudge(params, setHeader, user):
     runCode(submission)
     return submission.result
 
+def download(params, setHeader, user):
+    id = params["id"]
+    submission = Submission.get(id)
+    return submission.download()
+
+def downloadComplete(params, setHeader, user):
+    id = params["id"]
+    submission = Submission.get(id)
+    return submission.rmDownload()
+
 register.post("/submit", "loggedin", submit)
 register.post("/changeResult", "admin", changeResult)
 register.post("/rejudge", "admin", rejudge)
+register.post("/download", "admin", download)
+register.post("/downloadComplete", "admin", downloadComplete)

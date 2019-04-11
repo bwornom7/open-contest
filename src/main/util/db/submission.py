@@ -1,11 +1,26 @@
 from code.util.db import getKey, setKey, listSubKeys, deleteKey, User, Problem
 from uuid import uuid4
 import logging
+import os
+import shutil
+import json
+
 from readerwriterlock import rwlock
 
 lock = rwlock.RWLockWrite()
 
 submissions = {}
+
+extensions = {
+    "c": ".c",
+    "cpp": ".cpp",
+    "cs": ".cs",
+    "java": ".java",
+    "python2": ".py",
+    "python3": ".py",
+    "ruby": ".rb",
+    "vb": ".vb"
+}
 
 class Submission:
     saveCallbacks = []
@@ -108,6 +123,31 @@ class Submission:
                 "answers":   self.answers[:self.problem.samples],
                 "result":    self.result
             }
+
+    def download(self):
+        if not os.path.exists(f"/tmp/{self.id}"):
+            os.mkdir(f"/tmp/{self.id}/")
+        
+        with open(f"/tmp/{self.id}/code{extensions[self.language]}","w+") as code:
+            code.write(self.code)
+
+        with open(f"/tmp/{self.id}/inputs.json","w+") as infile:
+            input_dict = dict((i,self.inputs[i]) for i in range(len(self.inputs)))
+            json.dump(input_dict,infile)
+            
+        with open(f"/tmp/{self.id}/outputs.json","w+") as outfile:
+            output_dict = dict((i,self.outputs[i]) for i in range(len(self.outputs)))
+            json.dump(output_dict,outfile)
+        
+        ret = shutil.make_archive(f"/tmp/{self.id}/zip_{self.id}","zip",f"/tmp/{self.id}")
+
+        print("downloaded:",ret)
+        return f"/tmp/{self.id}/zip_{self.id}"
+
+    def rmDownload(self):
+        if os.path.exists(f"/tmp/{self.id}"):
+            shutil.rmtree(f"/tmp/{self.id}",ignore_errors=True)
+        return "ok"
 
     def forEach(callback: callable):
         with lock.gen_rlock():
