@@ -7,3 +7,4 @@ from .leaderboard import *
 from .messages import *
 from .users import *
 from .judge import *
+from .detailedReport import *
