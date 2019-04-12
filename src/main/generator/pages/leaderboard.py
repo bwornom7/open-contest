@@ -21,13 +21,13 @@ def leaderboard(params, user):
     start = contest.start
     end = contest.end
 
-    
+
     subs = {}
     for sub in Submission.all():
         if start <= sub.timestamp <= end and not sub.user.isAdmin():
             subs[sub.user.id] = subs.get(sub.user.id) or []
-            subs[sub.user.id].append(sub)            
-    
+            subs[sub.user.id].append(sub)
+
     problemSummary = {}
     for prob in contest.problems:
         problemSummary[prob.id] = [0, 0]
@@ -44,14 +44,14 @@ def leaderboard(params, user):
             len(usersubs)
         ))
     scores = sorted(scores, key=lambda score: score[1] * 1000000000 + score[2] * 10000000 - score[3], reverse=True)
-    
+
     ranks = [i + 1 for i in range(len(scores))]
     for i in range(1, len(scores)):
         u1 = scores[i]
         u2 = scores[i - 1]
         if (u1[1], u1[2], u1[3]) == (u2[1], u2[2], u2[3]):
             ranks[i] = ranks[i - 1]
-    
+
     scoresDisplay = []
     for (name, solved, samples, points, attempts), rank in zip(scores, ranks):
         scoresDisplay.append(h.tr(
@@ -107,7 +107,7 @@ def leaderboard(params, user):
 def score(submissions: list, contestStart, problemSummary) -> tuple:
     """ Given a list of submissions by a particular user, calculate that user's score.
         Calculates score in ACM format. """
-    
+
     solvedProbs = 0
     sampleProbs = 0
     penPoints = 0
@@ -121,7 +121,7 @@ def score(submissions: list, contestStart, problemSummary) -> tuple:
         if probId not in probs:
             probs[probId] = []
         probs[probId].append(sub)
-    
+
     # For each problem, calculate how much it adds to the score
     for prob in probs:
         # Sort the submissions by time
@@ -130,7 +130,7 @@ def score(submissions: list, contestStart, problemSummary) -> tuple:
         points = 0
         solved = False
         sampleSolved = False
-        
+
         for sub in subs:
             for res in sub.results[:sub.problem.samples]:
                 if res != "ok":
@@ -148,7 +148,7 @@ def score(submissions: list, contestStart, problemSummary) -> tuple:
                 points += (sub.timestamp - contestStart) // 60000
                 solved = True
                 break
-        
+
         # Increment attempts
         problemSummary[sub.problem.id][0] += 1
 
@@ -159,7 +159,7 @@ def score(submissions: list, contestStart, problemSummary) -> tuple:
             problemSummary[sub.problem.id][1] += 1
         elif sampleSolved:
             sampleProbs += 1
-    
+
     # The user's score is dependent on the number of solved problems and the number of penalty points
     return solvedProbs, sampleProbs, int(penPoints)
 
