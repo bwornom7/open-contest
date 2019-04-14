@@ -139,9 +139,9 @@ class Submission:
             output_dict = dict((i,self.outputs[i]) for i in range(len(self.outputs)))
             json.dump(output_dict,outfile)
         
-        ret = shutil.make_archive(f"/tmp/{self.id}/zip_{self.id}","zip",f"/tmp/{self.id}")
+        ret = shutil.make_archive(f"/tmp/{self.id}/pkg","zip",f"/tmp/{self.id}")
 
-        return f"/tmp/{self.id}/zip_{self.id}"
+        return f"/tmp/{self.id}/pkg.zip"
 
     def rmDownload(self):
         if os.path.exists(f"/tmp/{self.id}"):

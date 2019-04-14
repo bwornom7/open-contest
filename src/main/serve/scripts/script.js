@@ -706,17 +706,20 @@ Judging Page
             $(".download").attr("disabled", false);
             $(".download").removeClass("button-gray");
 
+            // console.log("PATH:",path)
+
             // Initiate download
-            var element = document.createElement('a');
-            element.setAttribute('href', 'data:application/octet-stream;charset=utf-8,');
-            element.setAttribute('download', path);
-        
+            let element = document.createElement('a');
+            element.setAttribute('href',path);
+            element.setAttribute('download',"pkg");
+
             element.style.display = 'none';
             document.body.appendChild(element);
         
             element.click();
 
             document.body.removeChild(element);
+
             alert(`Click to continue.`);
             $.post("/downloadComplete", {id: id},function(){})
         });

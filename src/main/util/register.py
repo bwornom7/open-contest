@@ -1,5 +1,6 @@
 import sys
 from http.server import BaseHTTPRequestHandler
+from http.client import HTTPResponse
 import json
 import os
 import mimetypes
@@ -127,7 +128,6 @@ def serve(env):
                 statusCode = 302
                 headers.append(("Location", "/login"))
         else:
-
             f = env["wsgi.input"].read().decode("utf-8")
             params = parse_qs(f)
 
@@ -140,9 +140,10 @@ def serve(env):
             for param in params:
                 if len(params[param]) == 1:
                     params[param] = params[param][0]
-
             try:
                 result = endpoint.callback(params, lambda x, y: setHeader(headers, x, y), user)
+                print("RESULT:",result)
+                
                 if logging.getLogger().isEnabledFor(logging.DEBUG):
                     logging.debug(result)
                 if isinstance(result, str):
@@ -170,6 +171,7 @@ def serve(env):
         response = f"Not found: {url}"
 
     return statusCode, headers, response
+
     self.send_response(statusCode)
     for header, value in headers:
         self.send_header(header, value)
