@@ -127,8 +127,10 @@ def serve(env):
                 statusCode = 302
                 headers.append(("Location", "/login"))
         else:
+
             f = env["wsgi.input"].read().decode("utf-8")
             params = parse_qs(f)
+
             user = auth.getUser(cookie)
             username = f'[{user.username}]' if user else ''
 
@@ -138,6 +140,7 @@ def serve(env):
             for param in params:
                 if len(params[param]) == 1:
                     params[param] = params[param][0]
+
             try:
                 result = endpoint.callback(params, lambda x, y: setHeader(headers, x, y), user)
                 if logging.getLogger().isEnabledFor(logging.DEBUG):
