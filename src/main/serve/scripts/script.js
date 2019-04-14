@@ -17,7 +17,7 @@ General page code
             if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
         }
         return null;
-    }    
+    }
 
     function setupHeaderDiv() {
         $("div.header").click(_ => {
@@ -65,20 +65,20 @@ General page code
         }
         $(".result-tabs").tabs();
         // $(".tablesorter").tablesorter();
-        var props = {  
-            sort: true,  
-            filters_row_index:1,  
-            remember_grid_values: true,  
+        var props = {
+            sort: true,
+            filters_row_index:1,
+            remember_grid_values: true,
             alternate_rows: true,
-            custom_slc_options: {  
+            custom_slc_options: {
                 cols:[],
                 texts: [],
                 values: [],
                 sorts: []
             }
-        }  
+        }
     if ($("#submissions").length) {
-        var tf = setFilterGrid("submissions",props); 
+        var tf = setFilterGrid("submissions",props);
     }
     });
 /*--------------------------------------------------------------------------------------------------
@@ -415,6 +415,7 @@ Contest page
         var endDate = $("#contest-end-date").val();
         var endTime = $("#contest-end-time").val();
         var scoreboardOffTime = $("#scoreboard-off-time").val();
+        var useTieBreaker = $("#sample-data-tiebreaker").val();
 
 
         // Invalid DATE format; "T" after the date and "Z" after the time have been inserted 
@@ -455,7 +456,7 @@ Contest page
             problems.push(newProblem);
         }
 
-        $.post("/editContest", {id: id, name: name, start: start, end: end, scoreboardOff: endScoreboard, problems: JSON.stringify(problems)}, id => {
+        $.post("/editContest", {id: id, name: name, start: start, end: end, scoreboardOff: endScoreboard, problems: JSON.stringify(problems), useTieBreaker:useTieBreaker}, id => {
             if (window.location.pathname == "/contests/new") {
                 window.location = `/contests/${id}`;
             } else {
@@ -477,7 +478,7 @@ Contest page
         var start = new Date(parseInt($("#start").val()));
         $("#contest-start-date").val(`${start.getFullYear()}-${fix(start.getMonth() + 1)}-${fix(start.getDate())}`);
         $("#contest-start-time").val(`${fix(start.getHours())}:${fix(start.getMinutes())}`);
-        
+
         var end = new Date(parseInt($("#end").val()));
         $("#contest-end-date").val(`${end.getFullYear()}-${fix(end.getMonth() + 1)}-${fix(end.getDate())}`);
         $("#contest-end-time").val(`${fix(end.getHours())}:${fix(end.getMinutes())}`);
@@ -565,7 +566,7 @@ Problem page
             testData.push(newTest);
         }
         problem.testData = JSON.stringify(testData);
-        
+
         if (problem.samples > testData.length) {
             alert("You have set the number of samples beyond the number of tests available.");
             return;
@@ -589,7 +590,7 @@ Problem page
         $(`.test-data-cards .card:eq(${dataNum})`).remove();
         editProblem();
     }
-    
+
     var mdEditors = [];
     function setupProblemPage() {
         $(".rich-text textarea").each((_, elem) => {
