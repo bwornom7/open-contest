@@ -40,6 +40,7 @@ def editContest(params, user):
     existingProblems = []
     start = time.time() * 1000
     end = (time.time() + 3600) * 1000
+    scoreboardOff = end
     if contest:
         title = contest.name
         start = contest.start
