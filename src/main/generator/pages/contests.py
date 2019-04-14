@@ -41,11 +41,14 @@ def editContest(params, user):
     start = time.time() * 1000
     end = (time.time() + 3600) * 1000
     scoreboardOff = end
+    useTieBreaker = False
+
     if contest:
         title = contest.name
         start = contest.start
         end = contest.end
         scoreboardOff = contest.scoreboardOff
+        useTieBreaker = contest.useTieBreaker
         chooseProblem = div(cls="actions", contents=[
             h.button("+ Choose Problem", cls="button", onclick="chooseProblemDialog()")
         ])
@@ -68,6 +71,13 @@ def editContest(params, user):
             div(cls="problem-cards", contents=problems)
         ]
 
+    if str(useTieBreaker) == "True":
+        curSelectedValue = "True"
+        curUnselectedValue = "False"
+    else:
+        curSelectedValue = "False"
+        curUnselectedValue = "True"
+        
     return Page(
         h.input(type="hidden", id="contest-id", value=id),
         h.input(type="hidden", id="pageId", value="Contest"),
@@ -98,10 +108,18 @@ def editContest(params, user):
                     h.input(cls="form-control", name="contest-end-time", id="contest-end-time", type="time")
                 ]),
                 h.input(type="hidden", id="scoreboardOff", value=scoreboardOff),
-                div(cls="form-group col-6"),
                 div(cls="form-group col-6", contents=[
                     h.label(**{"for": "scoreboard-off-time", "contents":"Turn Scoreboard Off Time"}),
                     h.input(cls="form-control", name="scoreboard-off-time", id="scoreboard-off-time", type="time")
+                ]),
+                h.input(type="hidden", id="useTieBreaker", value=useTieBreaker),
+
+                div(cls="form-group col-6", contents=[
+                    h.label(**{"for": "sample-data-tiebreaker", "contents":"Should we use sample data to break ties?"}),
+                    h.select(cls="form-control problem-choice", name="sample-data-tiebreaker", id="sample-data-tiebreaker", contents=[
+                        h.option( curSelectedValue, value=curSelectedValue),
+                        h.option( curUnselectedValue, value=curUnselectedValue)
+                    ])
                 ])
             ]),
             div(cls="align-right col-12", contents=[

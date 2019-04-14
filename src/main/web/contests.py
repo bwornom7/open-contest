@@ -8,6 +8,7 @@ def deleteContest(params, setHeader, user):
     return "ok"
 
 def editContest(params, setHeader, user):
+
     id = params.get("id")
     contest = Contest.get(id) or Contest()
 
@@ -16,6 +17,7 @@ def editContest(params, setHeader, user):
     contest.end      = int(params["end"])
     contest.scoreboardOff = int(params["scoreboardOff"])
     contest.problems = [Problem.get(id) for id in json.loads(params["problems"])]
+    contest.useTieBreaker = True if params["useTieBreaker"] == "True" else False
 
     contest.save()
 
