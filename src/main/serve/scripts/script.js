@@ -521,6 +521,26 @@ Problem page
         $("div.modal").modal();
     }
 
+    function updateBlocks(){
+        var btn = $(".show-hide").text();
+        if(btn === "Hide Problem Info Blocks") //hide blocks
+        {
+            console.log(btn);
+            $(".show-hide").html("Show Problem Info Blocks");
+            $("#stmt").toggle();
+            $("#inpt").toggle();
+            $("#outpt").toggle();
+            $("#constr").toggle();
+        } else {    //show blocks
+            $(".show-hide").html("Hide Problem Info Blocks");
+            $("#stmt").toggle();
+            $("#inpt").toggle();
+            $("#outpt").toggle();
+            $("#constr").toggle();
+        }
+        
+    }
+
     function createTestData() {
         var input = $(".test-data-input").val();
         var output = $(".test-data-output").val();
