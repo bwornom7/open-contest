@@ -96,10 +96,6 @@ def runCode(sub):
             # set intersecction
             matches = list(set(output_lines) & set(answer_lines))
 
-            print("MATCHES",matches)
-            print("OUTPUT","({})".format(last_output))
-            print("ANSWER","({})".format(last_answer))
-
             if len(matches) and len(output_lines) < len(answer_lines):
                 res = "incomplete"
             elif len(matches) and len(output_lines) > len(answer_lines):
