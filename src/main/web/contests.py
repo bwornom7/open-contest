@@ -11,12 +11,15 @@ def editContest(params, setHeader, user):
     id = params.get("id")
     contest = Contest.get(id) or Contest()
 
+
     contest.name     = params["name"]
     contest.start    = int(params["start"])
     contest.end      = int(params["end"])
     contest.scoreboardOff = int(params["scoreboardOff"])
     contest.problems = [Problem.get(id) for id in json.loads(params["problems"])]
+    contest.useTieBreaker = True if params["useTieBreaker"] == "True" else False
 
+    print(contest)
     contest.save()
 
     return contest.id
