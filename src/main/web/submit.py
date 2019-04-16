@@ -76,9 +76,9 @@ def runCode(sub):
 
         inputs.append(sub.problem.testData[i].input)
         errors.append(readFile(f"/tmp/{sub.id}/out/err{i}.txt"))
-        if len(output) <= sub.MAX_OUTPUT_DISPLAY_LENGTH:
+        if len(outputs) <= sub.MAX_OUTPUT_DISPLAY_LENGTH:
             outputs.append(readFile(f"/tmp/{sub.id}/out/out{i}.txt"))
-        if len(output) == sub.MAX_OUTPUT_DISPLAY_LENGTH:
+        if len(outputs) == sub.MAX_OUTPUT_DISPLAY_LENGTH:
             outputs.append("... additional data not displayed ...")
         answers.append(sub.problem.testData[i].output)
         
