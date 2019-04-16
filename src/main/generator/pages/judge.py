@@ -3,6 +3,7 @@ from code.util.db import Contest, Problem, Submission
 from code.generator.lib.htmllib import *
 from code.generator.lib.page import *
 
+import difflib
 import logging
 from datetime import datetime
 
@@ -50,6 +51,15 @@ class TestCaseTab(UIElement):
         )
 
 class TestCaseData(UIElement):
+    def get_diff(output,answer):
+        final = ""
+        result = list(difflib.unified_diff(output,answer))[3:]
+        for line in result:
+            if "-" in line or "+" in line:
+                line = f"<mark>{line}</mark>"
+            final += line
+        return final
+
     def __init__(self, x, sub):
         num, input, output, error, answer = x
         self.html = div(id=f"tabs-{sub.id}-{num}", contents=[
@@ -67,6 +77,12 @@ class TestCaseData(UIElement):
                 div(cls="col-6", contents=[
                     h.h4("Correct Answer"),
                     h.code((answer or "").replace(" ", "&nbsp;").replace("\n", "<br/>"))
+                ])
+            ]),
+            div(cls="row", contents=[
+                div(cls="col-12", contents=[
+                    h.h4("Difference"),
+                    h.code(TestCaseData.get_diff(output,answer).replace(" ", "&nbsp;").replace("\n", "<br/>"))
                 ])
             ])
         ])
