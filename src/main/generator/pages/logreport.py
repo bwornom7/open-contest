@@ -87,4 +87,4 @@ def generateLogReport(params, user):
 
 
 
-register.web("/logreport", "admin", generateLogReport)
+register.web("/logreport", "loggedin", generateLogReport)
