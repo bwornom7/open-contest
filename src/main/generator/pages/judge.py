@@ -57,7 +57,7 @@ class TestCaseData(UIElement):
         final = ""
         result = list(difflib.unified_diff(output,answer))[3:]
         for line in result:
-            if "-" in line:
+            if "-" in line or "+" in line:
                 line = f"<mark>{line}</mark>"
             final += line
         return final
@@ -68,17 +68,17 @@ class TestCaseData(UIElement):
             div(cls="row", contents=[
                 div(cls="col-12", contents=[
                     h.h4("Input"),
-                    h.code(input.replace(" ", "&nbsp;").replace("\n", "<br/>"))
+                    h.code((input or "").replace(" ", "&nbsp;").replace("\n", "<br/>"))
                 ])
             ]),
             div(cls="row", contents=[
                 div(cls="col-6", contents=[
                     h.h4("Output"),
-                    h.code(output.replace(" ", "&nbsp;").replace("\n", "<br/>"))
+                    h.code((output or "").replace(" ", "&nbsp;").replace("\n", "<br/>"))
                 ]),
                 div(cls="col-6", contents=[
                     h.h4("Correct Answer"),
-                    h.code(answer.replace(" ", "&nbsp;").replace("\n", "<br/>"))
+                    h.code((answer or "").replace(" ", "&nbsp;").replace("\n", "<br/>"))
                 ])
             ]),
             div(cls="row", contents=[
