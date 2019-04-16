@@ -1,6 +1,6 @@
 export USER="nathantheinventor"
 export OC_PROJECT_NAME="open-contest"
-export OC_CODE_DIR=~/Desktop/open-contest/src/main/
+export OC_CODE_DIR=~/open-contest/src/main/
 docker run \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v ~/db/:/db \
