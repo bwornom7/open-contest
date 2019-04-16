@@ -116,7 +116,7 @@ def editContest(params, user):
 
                 div(cls="form-group col-6", contents=[
                     h.label(**{"for": "sample-data-tiebreaker", "contents":"Should we use sample data to break ties?"}),
-                    h.select(cls="form-control problem-choice", name="sample-data-tiebreaker", id="sample-data-tiebreaker", contents=[
+                    h.select(cls="form-control", name="sample-data-tiebreaker", id="sample-data-tiebreaker", contents=[
                         h.option( curSelectedValue, value=curSelectedValue),
                         h.option( curUnselectedValue, value=curUnselectedValue)
                     ])

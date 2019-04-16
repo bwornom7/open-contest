@@ -51,6 +51,7 @@ def viewProblem(params, user):
         h.input(type="hidden", id="problem-id", value=problem.id),
         h2(problem.title, cls="page-title"),
         div(cls="problem-description", contents=[
+            Card("Problem Time Limit", formatMD(problem.timelimit), cls="timelmt"),
             Card("Problem Statement", formatMD(problem.statement), cls="stmt"),
             Card("Input Format", formatMD(problem.input), cls="inp"),
             Card("Output Format", formatMD(problem.output), cls="outp"),

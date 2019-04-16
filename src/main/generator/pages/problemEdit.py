@@ -29,11 +29,11 @@ class TestDataCard(UIElement):
         self.html = Card(title, div(cls="row", contents=[
             div(cls="col-6", contents=[
                 p("Input:", cls="no-margin"),
-                h.code(testData.input.replace(" ", "&nbsp;").replace("\n", "<br/>"))
+                h.code((testData.input or "").replace(" ", "&nbsp;").replace("\n", "<br/>"))
             ]),
             div(cls="col-6", contents=[
                 p("Output:", cls="no-margin"),
-                h.code(testData.output.replace(" ", "&nbsp;").replace("\n", "<br/>"))
+                h.code((testData.output or "").replace(" ", "&nbsp;").replace("\n", "<br/>"))
             ])
         ]), cls=cls, delete=f"deleteTestData({num})")
 
@@ -58,6 +58,10 @@ def editProblem(params, user):
                 div(cls="form-group col-12", contents=[
                     h.label(**{"for": "problem-title", "contents":"Title"}),
                     h.input(cls="form-control", name="problem-title", id="problem-title", value=prob.title)
+                ]),
+                div(cls="form-group col-6", contents=[
+                    h.label(**{"for": "problem-timelimit", "contents":"Problem Time Limit"}),
+                    h.input(cls="form-control", type="number",name="problem-timelimit", id="problem-timelimit", value=escape(prob.timelimit))
                 ]),
                 div(cls="form-group col-12", contents=[
                     h.label(**{"for": "problem-description", "contents":"Description"}),
@@ -118,6 +122,10 @@ def newProblem(params, user):
                 div(cls="form-group col-12", contents=[
                     h.label(**{"for": "problem-title", "contents":"Title"}),
                     h.input(cls="form-control", name="problem-title", id="problem-title", value="Title")
+                ]),
+                div(cls="form-group col-6", contents=[
+                    h.label(**{"for": "problem-timelimit", "contents":"Problem Time Limit"}),
+                    h.input(cls="form-control", type="number",name="problem-timelimit", id="problem-timelimit", value=Problem.default_timelimit)
                 ]),
                 div(cls="form-group col-12", contents=[
                     h.label(**{"for": "problem-description", "contents":"Description"}),

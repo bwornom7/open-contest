@@ -3,6 +3,7 @@ from code.util.db import Contest, Problem, Submission
 from code.generator.lib.htmllib import *
 from code.generator.lib.page import *
 
+import difflib
 import logging
 from datetime import datetime
 
@@ -14,22 +15,20 @@ class ProblemTab(UIElement):
         )
 
 icons = {
-    "ok": "check",
-    "wrong_answer": "times",
-    "tle": "clock",
-    "runtime_error": "exclamation-triangle",
-    "presentation_error": "times",
-    "extra_output": "times",
-    "pending": "sync"
-}
+        "ok": "check",
+        "wrong_answer": "times",
+        "tle": "clock",
+        "runtime_error": "exclamation-triangle",
+        "extra": "times",
+        "incomplete": "times",
+    }
 verdict_name = {
     "ok": "Accepted",
     "wrong_answer": "Wrong Answer",
     "tle": "Time Limit Exceeded",
     "runtime_error": "Runtime Error",
-    "presentation_error": "Presentation Error",
-    "extra_output": "Extra Output",
-    "pending": "Pending..."
+    "extra": "Extra Output",
+    "incomplete": "Incomplete Output",
 }
 
 def resultOptions(result):
@@ -52,23 +51,38 @@ class TestCaseTab(UIElement):
         )
 
 class TestCaseData(UIElement):
+    def get_diff(output,answer):
+        final = ""
+        result = list(difflib.unified_diff(output,answer))[3:]
+        for line in result:
+            if "-" in line or "+" in line:
+                line = f"<mark>{line}</mark>"
+            final += line
+        return final
+
     def __init__(self, x, sub):
         num, input, output, error, answer = x
         self.html = div(id=f"tabs-{sub.id}-{num}", contents=[
             div(cls="row", contents=[
                 div(cls="col-12", contents=[
                     h.h4("Input"),
-                    h.code(input.replace(" ", "&nbsp;").replace("\n", "<br/>"))
+                    h.code((input or "").replace(" ", "&nbsp;").replace("\n", "<br/>"))
                 ])
             ]),
             div(cls="row", contents=[
                 div(cls="col-6", contents=[
                     h.h4("Output"),
-                    h.code(output.replace(" ", "&nbsp;").replace("\n", "<br/>"))
+                    h.code((output or "").replace(" ", "&nbsp;").replace("\n", "<br/>"))
                 ]),
                 div(cls="col-6", contents=[
                     h.h4("Correct Answer"),
-                    h.code(answer.replace(" ", "&nbsp;").replace("\n", "<br/>"))
+                    h.code((answer or "").replace(" ", "&nbsp;").replace("\n", "<br/>"))
+                ])
+            ]),
+            div(cls="row", contents=[
+                div(cls="col-12", contents=[
+                    h.h4("Difference"),
+                    h.code(TestCaseData.get_diff(output,answer).replace(" ", "&nbsp;").replace("\n", "<br/>"))
                 ])
             ])
         ])
