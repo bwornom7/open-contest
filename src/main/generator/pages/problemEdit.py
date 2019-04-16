@@ -29,11 +29,11 @@ class TestDataCard(UIElement):
         self.html = Card(title, div(cls="row", contents=[
             div(cls="col-6", contents=[
                 p("Input:", cls="no-margin"),
-                h.code(testData.input.replace(" ", "&nbsp;").replace("\n", "<br/>"))
+                h.code((testData.input or "").replace(" ", "&nbsp;").replace("\n", "<br/>"))
             ]),
             div(cls="col-6", contents=[
                 p("Output:", cls="no-margin"),
-                h.code(testData.output.replace(" ", "&nbsp;").replace("\n", "<br/>"))
+                h.code((testData.output or "").replace(" ", "&nbsp;").replace("\n", "<br/>"))
             ])
         ]), cls=cls, delete=f"deleteTestData({num})")
 

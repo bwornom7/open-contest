@@ -15,22 +15,20 @@ class ProblemTab(UIElement):
         )
 
 icons = {
-    "ok": "check",
-    "wrong_answer": "times",
-    "tle": "clock",
-    "runtime_error": "exclamation-triangle",
-    "presentation_error": "times",
-    "extra_output": "times",
-    "pending": "sync"
-}
+        "ok": "check",
+        "wrong_answer": "times",
+        "tle": "clock",
+        "runtime_error": "exclamation-triangle",
+        "extra": "times",
+        "incomplete": "times",
+    }
 verdict_name = {
     "ok": "Accepted",
     "wrong_answer": "Wrong Answer",
     "tle": "Time Limit Exceeded",
     "runtime_error": "Runtime Error",
-    "presentation_error": "Presentation Error",
-    "extra_output": "Extra Output",
-    "pending": "Pending..."
+    "extra": "Extra Output",
+    "incomplete": "Incomplete Output",
 }
 
 def resultOptions(result):
