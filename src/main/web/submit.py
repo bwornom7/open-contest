@@ -61,7 +61,7 @@ def runCode(sub):
     os.mkdir(f"/tmp/{sub.id}/out")
 
     # Run the runner
-    if os.system(f"docker run --rm --network=none -m 256MB -v /tmp/{sub.id}/:/source nathantheinventor/open-contest-dev-{sub.language}-runner {tests} 5 > /tmp/{sub.id}/result.txt") != 0:
+    if os.system(f"docker run --rm --network=none -m 256MB -v /tmp/{sub.id}/:/source nathantheinventor/open-contest-dev-{sub.language}-runner {tests} {prob.timelimit} > /tmp/{sub.id}/result.txt") != 0:
         raise Exception("Something went wrong")
 
     inputs = []

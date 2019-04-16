@@ -11,6 +11,8 @@ def editProblem(params, setHeader, user):
     id = params.get("id")
     problem = Problem.get(id) or Problem()
 
+    print("\nEDIT:",params,"\n")
+
     problem.title       = params["title"]
     problem.description = params["description"]
     problem.statement   = params["statement"]
@@ -22,6 +24,7 @@ def editProblem(params, setHeader, user):
     testData            = json.loads(params["testData"])
     problem.testData    = [Datum(d["input"], d["output"]) for d in testData]
     problem.tests       = len(testData)
+    problem.timelimit   = params["timelimit"]
 
     problem.save()
 
