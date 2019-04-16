@@ -8,6 +8,8 @@ lock = rwlock.RWLockWrite()
 submissions = {}
 
 class Submission:
+    MAX_OUTPUT_LENGTH = 10000000
+    MAX_OUTPUT_DISPLAY_LENGTH = 5000
     saveCallbacks = []
     def __init__(self, id=None):
         if id != None:

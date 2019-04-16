@@ -70,13 +70,14 @@ def editContest(params, user):
             ),
             div(cls="problem-cards", contents=problems)
         ]
+
     if str(useTieBreaker) == "True":
         curSelectedValue = "True"
         curUnselectedValue = "False"
     else:
         curSelectedValue = "False"
         curUnselectedValue = "True"
-
+        
     return Page(
         h.input(type="hidden", id="contest-id", value=id),
         h.input(type="hidden", id="pageId", value="Contest"),
