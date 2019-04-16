@@ -73,16 +73,15 @@ def runCode(sub):
     result = "ok"
 
     for i in range(tests):
-        test_input = sub.problem.testData[i].input
-        test_error = readFile(f"/tmp/{sub.id}/out/err{i}.txt")
-        test_output = readFile(f"/tmp/{sub.id}/out/out{i}.txt")
-        test_answer = sub.problem.testData[i].output
 
-        inputs.append(test_input)
-        errors.append(test_error)
-        outputs.append(test_output)
-        answers.append(test_answer)
- 
+        inputs.append(sub.problem.testData[i].input)
+        errors.append(readFile(f"/tmp/{sub.id}/out/err{i}.txt"))
+        if len(output) <= sub.MAX_OUTPUT_DISPLAY_LENGTH:
+            outputs.append(readFile(f"/tmp/{sub.id}/out/out{i}.txt"))
+        if len(output) == sub.MAX_OUTPUT_DISPLAY_LENGTH:
+            outputs.append("... additional data not displayed ...")
+        answers.append(sub.problem.testData[i].output)
+        
         res = readFile(f"/tmp/{sub.id}/out/result{i}.txt")
 
         last_output = strip((outputs[-1] or "").rstrip())
