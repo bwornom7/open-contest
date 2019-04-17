@@ -22,6 +22,7 @@ def leaderboard(params, user):
     end = contest.end
     useTieBreaker = contest.useTieBreaker
 
+
     subs = {}
     for sub in Submission.all():
         if start <= sub.timestamp <= end and not sub.user.isAdmin():
@@ -104,10 +105,16 @@ def leaderboard(params, user):
                 *problemSummaryDisplay
             )
         ),
-        div(cls="align-right", contents=[
+        div(cls="align-left", contents=[
             h.br(),
-            h.button("Correct Log", cls="button", onclick="window.location='/logreport'")
+            h.button("Detailed Contest Report", cls="button", onclick="window.location='/detailedreport'")
         ]),
+        div(cls="align-left", contents=[
+            h.br(),
+            h.button("Correct Log", cls="button", onclick="window.location='/logreport'"),
+            h.br(),
+        ]),
+
     )
 
 def score(submissions: list, contestStart, problemSummary) -> tuple:
