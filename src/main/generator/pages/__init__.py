@@ -8,3 +8,4 @@ from .messages import *
 from .users import *
 from .judge import *
 from .detailedReport import *
+from .logreport import *

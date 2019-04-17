@@ -4,6 +4,7 @@ from code.util import register
 from code.util.db import Submission, Problem
 import time
 import shutil
+import difflib
 import re
 from uuid import uuid4
 
@@ -61,7 +62,7 @@ def runCode(sub):
     os.mkdir(f"/tmp/{sub.id}/out")
 
     # Run the runner
-    if os.system(f"docker run --rm --network=none -m 256MB -v /tmp/{sub.id}/:/source nathantheinventor/open-contest-dev-{sub.language}-runner {tests} 5 > /tmp/{sub.id}/result.txt") != 0:
+    if os.system(f"docker run --rm --network=none -m 256MB -v /tmp/{sub.id}/:/source nathantheinventor/open-contest-dev-{sub.language}-runner {tests} {prob.timelimit} > /tmp/{sub.id}/result.txt") != 0:
         raise Exception("Something went wrong")
 
     inputs = []
@@ -72,21 +73,45 @@ def runCode(sub):
     result = "ok"
 
     for i in range(tests):
+
         inputs.append(sub.problem.testData[i].input)
         errors.append(readFile(f"/tmp/{sub.id}/out/err{i}.txt"))
-        outputs.append(readFile(f"/tmp/{sub.id}/out/out{i}.txt"))
+        if len(outputs) <= sub.MAX_OUTPUT_DISPLAY_LENGTH:
+            outputs.append(readFile(f"/tmp/{sub.id}/out/out{i}.txt"))
+        if len(outputs) == sub.MAX_OUTPUT_DISPLAY_LENGTH:
+            outputs.append("... additional data not displayed ...")
         answers.append(sub.problem.testData[i].output)
         
         res = readFile(f"/tmp/{sub.id}/out/result{i}.txt")
-        if res == "ok" and strip((answers[-1] or "").rstrip()) != strip((outputs[-1] or "").rstrip()):
-            res = "wrong_answer"
+
+        last_output = strip((outputs[-1] or "").rstrip())
+        last_answer = strip((answers[-1] or "").rstrip())
+
+        # improved auto-judge implementaion
+        if res == "ok":
+            output_lines = last_output.split()
+            answer_lines = last_answer.split()
+
+            # set intersecction
+            matches = list(set(output_lines) & set(answer_lines))
+
+            if len(matches) and len(output_lines) < len(answer_lines):
+                res = "incomplete"
+            elif len(matches) and len(output_lines) > len(answer_lines):
+                res = "extra"
+            elif not len(matches):
+                res = "wrong_answer"
+            elif last_answer == last_output:
+                res = "ok"
+            
         if res == None:
             res = "tle"
-        results.append(res)
 
         # Make result the first incorrect result
         if res != "ok" and result == "ok":
             result = res
+
+        results.append(res)
 
     sub.result = result
     if readFile(f"/tmp/{sub.id}/result.txt") == "compile_error\n":

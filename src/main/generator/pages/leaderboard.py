@@ -20,6 +20,7 @@ def leaderboard(params, user):
 
     start = contest.start
     end = contest.end
+    useTieBreaker = contest.useTieBreaker
 
 
     subs = {}
@@ -43,7 +44,10 @@ def leaderboard(params, user):
             scor[2],
             len(usersubs)
         ))
-    scores = sorted(scores, key=lambda score: score[1] * 1000000000 + score[2] * 10000000 - score[3], reverse=True)
+    if (useTieBreaker):
+        scores = sorted(scores, key=lambda score: score[1] * 1000000000 + score[2] * 10000000 - score[3], reverse=True)
+    else:
+        scores = sorted(scores, key=lambda score: score[1] * 1000000000 - score[3], reverse=True)
 
     ranks = [i + 1 for i in range(len(scores))]
     for i in range(1, len(scores)):
@@ -100,12 +104,17 @@ def leaderboard(params, user):
             h.tbody(
                 *problemSummaryDisplay
             )
-
         ),
         div(cls="align-left", contents=[
             h.br(),
             h.button("Detailed Contest Report", cls="button", onclick="window.location='/detailedreport'")
         ]),
+        div(cls="align-left", contents=[
+            h.br(),
+            h.button("Correct Log", cls="button", onclick="window.location='/logreport'"),
+            h.br(),
+        ]),
+
     )
 
 def score(submissions: list, contestStart, problemSummary) -> tuple:

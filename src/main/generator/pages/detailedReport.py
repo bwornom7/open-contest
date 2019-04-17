@@ -74,7 +74,6 @@ def generateDetailedReport(params, user):
     for user in scores:
         placement.append(user[0])
 
-    print(placement)
     rankings = {}
     for sub in Submission.all():
         if start <= sub.timestamp <= end and not sub.user.isAdmin():

@@ -17,7 +17,7 @@ General page code
             if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
         }
         return null;
-    }    
+    }
 
     function setupHeaderDiv() {
         $("div.header").click(_ => {
@@ -65,20 +65,20 @@ General page code
         }
         $(".result-tabs").tabs();
         // $(".tablesorter").tablesorter();
-        var props = {  
-            sort: true,  
-            filters_row_index:1,  
-            remember_grid_values: true,  
+        var props = {
+            sort: true,
+            filters_row_index:1,
+            remember_grid_values: true,
             alternate_rows: true,
-            custom_slc_options: {  
+            custom_slc_options: {
                 cols:[],
                 texts: [],
                 values: [],
                 sorts: []
             }
-        }  
+        }
     if ($("#submissions").length) {
-        var tf = setFilterGrid("submissions",props); 
+        var tf = setFilterGrid("submissions",props);
     }
     });
 /*--------------------------------------------------------------------------------------------------
@@ -162,13 +162,17 @@ Problem page
         "ok": "check",
         "wrong_answer": "times",
         "tle": "clock",
-        "runtime_error": "exclamation-triangle"
+        "runtime_error": "exclamation-triangle",
+        "extra": "times",
+        "incomplete": "times",
     };
     var verdict_name = {
         "ok": "Accepted",
         "wrong_answer": "Wrong Answer",
         "tle": "Time Limit Exceeded",
-        "runtime_error": "Runtime Error"
+        "runtime_error": "Runtime Error",
+        "extra": "Extra Output",
+        "incomplete": "Incomplete Output",
     };
 
     function showResults(sub) {
@@ -415,10 +419,20 @@ Contest page
         var endDate = $("#contest-end-date").val();
         var endTime = $("#contest-end-time").val();
         var scoreboardOffTime = $("#scoreboard-off-time").val();
+        var useTieBreaker = $("#sample-data-tiebreaker").val();
 
-        var start = new Date(`${startDate} ${startTime}`).getTime();
-        var end = new Date(`${endDate} ${endTime}`).getTime();
-        var endScoreboard = new Date(`${endDate} ${scoreboardOffTime}`).getTime();
+
+        // Invalid DATE format; "T" after the date and "Z" after the time have been inserted
+        // for the correct format for creating the Dates, then the milliseconds are adjusted
+        // for the correct time zone for each of the following variables, since "Z" assumes you
+        // are entering a UTC time.
+
+        var start = new Date(`${startDate}T${startTime}Z`);
+        start = start.getTime() + (start.getTimezoneOffset() * 60000);
+        var end = new Date(`${endDate}T${endTime}Z`);
+        end = end.getTime() + (end.getTimezoneOffset() * 60000);
+        var endScoreboard = new Date(`${endDate}T${scoreboardOffTime}Z`);
+        endScoreboard = endScoreboard.getTime() + (endScoreboard.getTimezoneOffset() * 60000);
 
         if (end <= start) {
             alert("The end of the contest must be after the start.");
@@ -446,7 +460,7 @@ Contest page
             problems.push(newProblem);
         }
 
-        $.post("/editContest", {id: id, name: name, start: start, end: end, scoreboardOff: endScoreboard, problems: JSON.stringify(problems)}, id => {
+        $.post("/editContest", {id: id, name: name, start: start, end: end, scoreboardOff: endScoreboard, problems: JSON.stringify(problems), useTieBreaker: useTieBreaker}, id => {
             if (window.location.pathname == "/contests/new") {
                 window.location = `/contests/${id}`;
             } else {
@@ -468,7 +482,7 @@ Contest page
         var start = new Date(parseInt($("#start").val()));
         $("#contest-start-date").val(`${start.getFullYear()}-${fix(start.getMonth() + 1)}-${fix(start.getDate())}`);
         $("#contest-start-time").val(`${fix(start.getHours())}:${fix(start.getMinutes())}`);
-        
+
         var end = new Date(parseInt($("#end").val()));
         $("#contest-end-date").val(`${end.getFullYear()}-${fix(end.getMonth() + 1)}-${fix(end.getDate())}`);
         $("#contest-end-time").val(`${fix(end.getHours())}:${fix(end.getMinutes())}`);
@@ -521,6 +535,26 @@ Problem page
         $("div.modal").modal();
     }
 
+    function updateBlocks(){
+        var btn = $(".show-hide").text();
+        if(btn === "Hide Problem Info Blocks") //hide blocks
+        {
+            console.log(btn);
+            $(".show-hide").html("Show Problem Info Blocks");
+            $("#stmt").toggle();
+            $("#inpt").toggle();
+            $("#outpt").toggle();
+            $("#constr").toggle();
+        } else {    //show blocks
+            $(".show-hide").html("Hide Problem Info Blocks");
+            $("#stmt").toggle();
+            $("#inpt").toggle();
+            $("#outpt").toggle();
+            $("#constr").toggle();
+        }
+        
+    }
+
     function createTestData() {
         var input = $(".test-data-input").val();
         var output = $(".test-data-output").val();
@@ -539,6 +573,7 @@ Problem page
         var id = $("#prob-id").val();
         var problem = {id: id};
         problem.title       = $("#problem-title").val();
+        problem.timelimit   = $("#problem-timelimit").val();
         problem.description = $("#problem-description").val();
         problem.statement   = mdEditors[0].value();
         problem.input       = mdEditors[1].value();
@@ -555,7 +590,7 @@ Problem page
             testData.push(newTest);
         }
         problem.testData = JSON.stringify(testData);
-        
+
         if (problem.samples > testData.length) {
             alert("You have set the number of samples beyond the number of tests available.");
             return;
@@ -579,7 +614,7 @@ Problem page
         $(`.test-data-cards .card:eq(${dataNum})`).remove();
         editProblem();
     }
-    
+
     var mdEditors = [];
     function setupProblemPage() {
         $(".rich-text textarea").each((_, elem) => {
@@ -684,6 +719,14 @@ Judging Page
             $(".result-tabs").tabs();
             fixFormatting();
             $(".modal").modal();
+        });
+    }
+
+    function download(id) {
+        $.post("/download", {id: id}, data => {
+            $(".download").attr("disabled", false);
+            $(".download").removeClass("button-gray");
+            alert(`Download was ${data}.`);
         });
     }
 
