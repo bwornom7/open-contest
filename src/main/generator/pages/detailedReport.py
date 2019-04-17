@@ -6,15 +6,22 @@ import logging
 from code.util import register
 import time
 
-def constructTableRows(data):
+def constructTableRows(data, placement):
+
     tableRows = []
-    for user in data:
+
+    for user in data.keys():
+
+        problems = []
+        for problem in sorted(data[user]["problems"]):
+            problems.append(h.td(data[user]["problems"][problem][0]))
+            problems.append(h.td(data[user]["problems"][problem][1], cls="time-format"))
         tableRows.append(
             h.tr(
-                h.td(0),
-                h.td(user["contestant"]),
-                h.td(user["id"])
-
+                h.td(str(placement.index(data[user]["contestant"]) + 1), cls="center"),
+                h.td(data[user]["contestant"], cls="center"),
+                h.td(data[user]["correct"], cls="center"),
+                *problems
             )
         )
     return tableRows
@@ -58,25 +65,48 @@ def generateDetailedReport(params, user):
             scor[2],
             len(usersubs)
         ))
+
+
+    #TODO: make this compatible with sample data tie breaker
     scores = sorted(scores, key=lambda score: score[1] * 1000000000 + score[2] * 10000000 - score[3], reverse=True)
 
+    placement = []
+    for user in scores:
+        placement.append(user[0])
+
+    print(placement)
     rankings = {}
-    for entry in Submission.all():
+    for sub in Submission.all():
         if start <= sub.timestamp <= end and not sub.user.isAdmin():
             if sub.user.id not in rankings.keys():
                 rankings[sub.user.id] = {}
                 rankings[sub.user.id]["contestant"] = User.get(sub.user.id).username
                 rankings[sub.user.id]["id"] = User.get(sub.user.id).id
+                rankings[sub.user.id]["correct"] = 0
+                rankings[sub.user.id]["problems"] = {}
 
+                for problem in contest.problems:
+                    rankings[sub.user.id]["problems"][problem.title] = [0, 0]
 
+            probTitle = Problem.get(sub.problem.id).title
 
+            if sub.result == "ok" and rankings[sub.user.id]["problems"][probTitle][1] == 0:
+                rankings[sub.user.id]["problems"][probTitle][0] += 1
+                rankings[sub.user.id]["problems"][probTitle][1] = sub.timestamp
+                rankings[sub.user.id]["correct"] = 1
+            elif sub.result == "ok" and rankings[sub.user.id]["problems"][probTitle][1] != 0:
+                rankings[sub.user.id]["problems"][probTitle][0] += 1
+            elif sub.result != "ok":
+                rankings[sub.user.id]["problems"][probTitle][0] += 1
 
     problemHeader = []
 
-    for problem in contest.problems:
-        problemHeader.append( h.th(problem.title) )
+    for problem in sorted(contest.problems):
+        problemHeader.append( h.th(problem.title + " submissions"))
+        problemHeader.append( h.th("Time"))
 
-    problemRows = constructTableRows(rankings)
+
+    problemRows = constructTableRows(rankings, placement)
 
     return Page(
             h2("Final Standings", cls="page-title"),
@@ -85,9 +115,7 @@ def generateDetailedReport(params, user):
                     h.tr(
                         h.th("Rank", cls="center"),
                         h.th("Contestant", cls="center"),
-                        h.th("ID", cls="center"),
                         h.th("Correct", cls="center"),
-                        h.th("Penalty", cls="center"),
                         *problemHeader
                     )
                 ),
