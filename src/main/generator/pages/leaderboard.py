@@ -52,9 +52,12 @@ def leaderboard(params, user):
     for i in range(1, len(scores)):
         u1 = scores[i]
         u2 = scores[i - 1]
-        if (u1[1], u1[2], u1[3]) == (u2[1], u2[2], u2[3]):
-            ranks[i] = ranks[i - 1]
-
+        if (useTieBreaker):
+            if (u1[1], u1[2], u1[3]) == (u2[1], u2[2], u2[3]):
+                ranks[i] = ranks[i - 1]
+        else:
+            if (u1[1], u1[3]) == (u2[1], u2[3]):
+                ranks[i] = ranks[i - 1]
     scoresDisplay = []
     for (name, solved, samples, points, attempts), rank in zip(scores, ranks):
         scoresDisplay.append(h.tr(
